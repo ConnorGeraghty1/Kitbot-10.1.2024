@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import com.analog.adis16470.frc.ADIS16470_IMU;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -15,10 +16,25 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
 
+
+  private static final double kAngleSetpoint = 0.0;
+	private static final double kP = 0.005; // propotional turning constant
+ 
+  private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
 
+  private DifferentialDrive m_robotDrive;
+  private XboxController controller;
+  
+  private final CANSparkMax m_leftMotor = new CANSparkMax(Constants.leftMotorID, MotorType.kBrushed);
+  private final CANSparkMax m_rightMotor = new CANSparkMax(Constants.rightMotorID, MotorType.kBrushed);
+
+  private final CANSparkMax m_leftMotor1 = new CANSparkMax(Constants.leftMotor1ID, MotorType.kBrushed);
+  private final CANSparkMax m_rightMotor1 = new CANSparkMax(Constants.rightMotor1ID, MotorType.kBrushed);
+
+  public static final ADIS16470_IMU imu = new ADIS16470_IMU();
+ 
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -28,6 +44,8 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    imu.calibrate();
+    imu.reset();
   }
 
   /**
@@ -62,11 +80,16 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    
+    
   }
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    
+  }
 
   @Override
   public void teleopInit() {
@@ -77,11 +100,49 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    m_rightMotor.restoreFactoryDefaults();
+    m_leftMotor.restoreFactoryDefaults();
+    m_leftMotor1.restoreFactoryDefaults();
+    m_rightMotor1.restoreFactoryDefaults();
+
+    m_leftMotor1.follow(m_leftMotor);
+    m_rightMotor1.follow(m_rightMotor, true); 
+
+    SendableRegistry.addChild(m_robotDrive, m_leftMotor);
+    SendableRegistry.addChild(m_robotDrive, m_rightMotor);
+
+    // We need to invert one side of the drivetrain so that positive voltages
+    // result in both sides moving forward. Depending on how your robot's
+    // gearbox is constructed, you might have to invert the left side instead.
+
+      
+
+
+    // m_rightMotor.setInverted(false);
+    // m_leftMotor.setInverted(false);
+    // m_rightMotor1.setInverted(false);
+    // m_leftMotor1.setInverted(false);
+
+    m_rightMotor.burnFlash();
+    m_leftMotor.burnFlash();
+    m_rightMotor1.burnFlash();
+    m_leftMotor1.burnFlash();
+
+    m_robotDrive = new DifferentialDrive(m_leftMotor::set, m_rightMotor::set);
+    controller = new XboxController(0);
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    m_robotDrive.tankDrive(controller.getLeftY(), controller.getRightY());
+    System.out.println(m_rightMotor1.getAppliedOutput());
+    System.out.println(m_leftMotor1.getAppliedOutput());
+
+    double turningValue = (kAngleSetpoint - imu.getAngle()) * kP;
+		  
+  }
 
   @Override
   public void testInit() {
