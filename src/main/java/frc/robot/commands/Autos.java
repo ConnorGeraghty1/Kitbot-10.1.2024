@@ -19,9 +19,13 @@ public final class Autos {
      * with the .withTimeout(1) decorator to timeout after 1 second, and use the .andThen decorator
      * to stop the drivetrain after the first command times out
      */
-    return new RunCommand(() -> drivetrain.arcadeDrive(-.5, 0), drivetrain)
-        .withTimeout(1)
-        .andThen(new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain));
+    return new RunCommand(() -> drivetrain.arcadeDrive(.5, 0), drivetrain) //move forward at 50% speed
+      .withTimeout(0.5) //wait 0.5 seconds
+      .andThen(new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain))//stop
+      .withTimeout(0.5) //wait 0.5 seconds
+      .andThen(new RunCommand(() -> drivetrain.arcadeDrive(-.5, 0), drivetrain))//move backwards at 50% speed
+      .withTimeout(0.5) //wait 0.5 seconds
+      .andThen(new RunCommand(() -> drivetrain.arcadeDrive(0, 0), drivetrain));
   }
 
   private Autos() {
