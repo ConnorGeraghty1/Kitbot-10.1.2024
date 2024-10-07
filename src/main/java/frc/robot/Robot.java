@@ -93,6 +93,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+	  
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -131,11 +132,13 @@ public class Robot extends TimedRobot {
 
     m_robotDrive = new DifferentialDrive(m_leftMotor::set, m_rightMotor::set);
     controller = new XboxController(0);
+	  
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+	  
     m_robotDrive.tankDrive(controller.getLeftY(), controller.getRightY());
     System.out.println(m_rightMotor1.getAppliedOutput());
     System.out.println(m_leftMotor1.getAppliedOutput());
@@ -146,8 +149,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
+	  
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+	  
   }
 
   /** This function is called periodically during test mode. */
