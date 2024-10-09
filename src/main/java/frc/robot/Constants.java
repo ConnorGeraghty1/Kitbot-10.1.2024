@@ -13,11 +13,20 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static class OperatorConstants {
-    // Port numbers for driver and operator gamepads. These correspond with the numbers on the USB
-    // tab of the DriverStation
-    public static final int kDriverControllerPort = 0;
-    public static final int kOperatorControllerPort = 1;
+
+    public static final int leftMotorID = 3;
+    public static final int leftMotor1ID = 4;
+    public static final int rightMotorID = 1;
+    public static final int rightMotor1ID = 2;
+  
+  // Port numbers for driver and operator gamepads. These correspond with the numbers on the USB
+  // tab of the DriverStation
+  public static final int kDriverControllerPort = 0;
+  public static final int kOperatorControllerPort = 1;
+
+    
+    ////////// EVERYTHING AFTER THIS IS DIRECTLY FROM TEMPLATE CODE /////////
+    /*
   }
 
   public static class DrivetrainConstants {
@@ -48,5 +57,5 @@ public final class Constants {
     public static final double kIntakeFeederSpeed = -.2;
 
     public static final double kLauncherDelay = 1;
-  }
+  }*/
 }
