@@ -32,9 +32,12 @@ public class Robot extends TimedRobot {
 
   private final CANSparkMax m_leftMotor1 = new CANSparkMax(Constants.leftMotor1ID, MotorType.kBrushed);
   private final CANSparkMax m_rightMotor1 = new CANSparkMax(Constants.rightMotor1ID, MotorType.kBrushed);
+	
 
-  public static final ADIS16470_IMU imu = new ADIS16470_IMU();
- 
+	// IMU SETUP
+	
+  
+	
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
